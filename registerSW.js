@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/react-maze-game/sw.js', { scope: '/react-maze-game/' })})}
