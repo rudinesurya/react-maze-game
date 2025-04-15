@@ -5,9 +5,12 @@ import { createEmptyMaze } from "./mazeLogic";
 import { aStar } from "./astar";
 import { dijkstra } from "./dijkstra";
 
-const CELL_SIZE = 40;
 const COLS = 12;
 const ROWS = 20;
+
+const windowWidth = window.innerWidth;
+const maxCellSize = Math.floor(windowWidth / COLS);
+const CELL_SIZE = Math.min(60, maxCellSize);
 
 const MazeGame: React.FC = () => {
     const [maze, setMaze] = useState(createEmptyMaze(COLS, ROWS));
@@ -63,8 +66,9 @@ const MazeGame: React.FC = () => {
                 Algorithm: {algorithm.toUpperCase()}
             </button>
 
-            <Stage width={COLS * CELL_SIZE} height={ROWS * CELL_SIZE}>
-                <Layer>
+            <Stage width={COLS * CELL_SIZE} height={ROWS * CELL_SIZE + CELL_SIZE}>
+                {/* add a top margin of a cell size */}
+                <Layer y={CELL_SIZE}> 
                     {maze.map((row, y) =>
                         row.map((cell, x) => (
                             <Rect
@@ -76,8 +80,10 @@ const MazeGame: React.FC = () => {
                                 fill={cell === 1 ? "#333" : "#fff"}
                                 stroke="#ccc"
                                 strokeWidth={1}
-                                onContextMenu={(e) => {
-                                    e.evt.preventDefault(); // prevent browser menu
+                                onClick={() => {
+                                    toggleWall(x, y);
+                                }}
+                                onTap={() => {
                                     toggleWall(x, y);
                                 }}
                             />
@@ -91,13 +97,15 @@ const MazeGame: React.FC = () => {
                             width={CELL_SIZE}
                             height={CELL_SIZE}
                             fill="rgba(0,0,255,0.15)"
-                            onContextMenu={(e) => {
-                                e.evt.preventDefault(); // prevent browser menu
+                            onClick={() => {
+                                toggleWall(x, y);
+                            }}
+                            onTap={() => {
                                 toggleWall(x, y);
                             }}
                         />
                     ))}
-                    {path.map(({ x, y }, i) => (
+                    {path.map(({ x, y }, _) => (
                         <Rect
                             key={`path-${x}-${y}`}
                             x={x * CELL_SIZE}
@@ -105,8 +113,10 @@ const MazeGame: React.FC = () => {
                             width={CELL_SIZE}
                             height={CELL_SIZE}
                             fill="rgba(0, 255, 0, 0.3)"
-                            onContextMenu={(e) => {
-                                e.evt.preventDefault(); // prevent browser menu
+                            onClick={() => {
+                                toggleWall(x, y);
+                            }}
+                            onTap={() => {
                                 toggleWall(x, y);
                             }}
                         />
